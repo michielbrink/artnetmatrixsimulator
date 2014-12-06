@@ -1,3 +1,3 @@
 artnetmatrixsimulator
 =====================
-hello, this is only a readme, bye ;)
+hello, this is only a readme, bye
