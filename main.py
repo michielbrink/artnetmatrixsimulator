@@ -2,42 +2,15 @@
 
 #thanks to http://openbookproject.net/thinkcs/python/english3e/pygame.html
 
-import argparse, socket, time, select, pygame
+import socket, time, pygame
 
 matrix_width = 10
 matrix_height = 17
-blockratio = 100
-color_order = ['r','g','b']
+blockratio = 100 #fill in a blocksize
+color_order = [2,0,1] #[r,g,b]
 UDP_PORT = 6453
 UDP_IP= "0.0.0.0"
 bufferSize = 1024
-
-matrix_size = matrix_width * matrix_height
-
-def buildPacket(universe, dmxdata):
-    # Stolen from fire-ohmlogo.py by OHM2013
-	size = len(dmxdata) * 3
-	#              01234567   8   9   a   b   c   d   e   f   10  11  
-	#                         op-code protver seq phy universe len  
-	data = bytearray("Art-Net\x00\x00\x50\x00\x0e\x00\x00")
-	data += chr(int(universe % 256))
-	data += chr(int(universe / 256))
-	data += chr(int(size / 256))
-	data += chr(int(size % 256))
-	for (r, g, b) in dmxdata:
-		data += chr(r)
-		data += chr(g)
-		data += chr(b)
-	return data
-
-def convertSnakeModes(pattern):
-	for y in range(0,matrix_height,2):
-		tempList = []
-		for x in range(matrix_width-1,-1,-1):
-			tempList.append(pattern[y*matrix_width+x])
-		for x in range(0, matrix_width):
-			pattern[y*matrix_width+x] = tempList[x]
-	return pattern
 
 print("Active and listening for connections on port %s and ip %s" % (UDP_PORT, UDP_IP))
 # create a datagram socket
@@ -85,7 +58,7 @@ def draw_board():
 
         for col in range(matrix_height):       # Run through cols drawing squares
             for row in range(matrix_width):           # Draw each row of the board.
-                color = (data[data_number+2],data[data_number+0],data[data_number+1])
+                color = (data[data_number+color_order[0]],data[data_number+color_order[1]],data[data_number+color_order[2]])
                 data_number += 3
                 the_square = (blockratio*col, blockratio*row, blockratio*matrix_height, blockratio*matrix_width)
                 surface.fill(color, the_square)
