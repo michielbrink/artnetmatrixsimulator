@@ -9,7 +9,7 @@ matrix_height = 17
 blockratio = 100 #fill in a blocksize
 color_order = [2,0,1] #[r,g,b]
 UDP_PORT = 6453
-UDP_IP= "0.0.0.0"
+UDP_IP= "127.0.0.1"
 bufferSize = 1024
 
 print("Active and listening for connections on port %s and ip %s" % (UDP_PORT, UDP_IP))
@@ -63,13 +63,10 @@ def draw_board():
                 the_square = (blockratio*col, blockratio*row, blockratio*matrix_height, blockratio*matrix_width)
                 surface.fill(color, the_square)
 
-        # Now that squares are drawn, draw the queens.
-  
-
         pygame.display.flip()
 
 
     pygame.quit()
 
 if __name__ == "__main__":
-    draw_board()    # 7 x 7 to test window matrix_size
+    draw_board()  
