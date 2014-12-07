@@ -26,63 +26,59 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 # bind the socket to a port, to allow people to send info to it
 sock.bind( (UDP_IP,UDP_PORT) )
 
-
-def draw_board():
-
-    pygame.init()
-    if args.blocksize:
-        args.blocksize = int(args.blocksize)
-        
-    else:
-        infoObject = pygame.display.Info()
-        args.blocksize = infoObject.current_w/matrix_height
+pygame.init()
+if args.blocksize:
+    args.blocksize = int(args.blocksize)
+      
+else:
+    infoObject = pygame.display.Info()
+    args.blocksize = infoObject.current_w/matrix_height
     
 
-    if args.fullscreen:
-        surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.FULLSCREEN)
-    else:
-        surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.RESIZABLE)
+if args.fullscreen:
+    surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.FULLSCREEN)
+else:
+    surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.RESIZABLE)
 
 
-    while True:
+while True:
 
-        byte_data = None
-        data_number = 0
-
-        try:
+    byte_data = None
+    data_number = 0
+    try:
           
-            # try to get a message on the socket
-            byte_data, addr = sock.recvfrom( 531, socket.MSG_DONTWAIT ) # buffer size is 1024 bytes
+        # try to get a message on the socket
+        byte_data, addr = sock.recvfrom( 531, socket.MSG_DONTWAIT ) # buffer size is 1024 bytes
 
         
-        #  if no message was available, just wait a while
-        except socket.error:
+    #  if no message was available, just wait a while
+    except socket.error:
 
-            # wait a bit to keep from clobbering the CPU
-            time.sleep(0.01)
+        # wait a bit to keep from clobbering the CPU
+        time.sleep(0.01)
 
-        if byte_data:
+    if byte_data:
          
-            byte_data = byte_data[18:]
-            data=[ord(i) for i in byte_data]
-            print data
+        byte_data = byte_data[18:]
+        data=[ord(i) for i in byte_data]
+        print data
 
-        # Look for an event from keyboard, mouse, etc.
-        ev = pygame.event.poll()
-        if ev.type == pygame.QUIT:
-            break;
+    # Look for an event from keyboard, mouse, etc.
+    ev = pygame.event.poll()
+    if ev.type == pygame.QUIT:
+        break;
+    elif ev.type == pygame.KEYDOWN:
+        if ev.key == pygame.K_ESCAPE:
+            pygame.quit()
 
-        for col in range(matrix_height):       # Run through cols drawing squares
-            for row in range(matrix_width):           # Draw each row of the board.
-                color = (data[data_number+color_order[0]],data[data_number+color_order[1]],data[data_number+color_order[2]])
-                data_number += 3
-                the_square = (args.blocksize*col, args.blocksize*row, args.blocksize*matrix_height, args.blocksize*matrix_width)
-                surface.fill(color, the_square)
+    for col in range(matrix_height):       # Run through cols drawing squares
+        for row in range(matrix_width):           # Draw each row of the board.
+            color = (data[data_number+color_order[0]],data[data_number+color_order[1]],data[data_number+color_order[2]])
+            data_number += 3
+            the_square = (args.blocksize*col, args.blocksize*row, args.blocksize*matrix_height, args.blocksize*matrix_width)
+            surface.fill(color, the_square)
 
-        pygame.display.flip()
+    pygame.display.flip()
 
 
-    pygame.quit()
-
-if __name__ == "__main__":
-    draw_board()  
+pygame.quit()
