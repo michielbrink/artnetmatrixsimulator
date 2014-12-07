@@ -1,3 +1,7 @@
 artnetmatrixsimulator
 =====================
-hello, this is only a readme, bye ;)
+run "python main.py" to execute.
+
+optional arguments:
+-f (fullscreen)
+-b (change blocksize)
