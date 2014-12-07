@@ -2,15 +2,22 @@
 
 #thanks to http://openbookproject.net/thinkcs/python/english3e/pygame.html
 
-import socket, time, pygame
+import argparse, socket, time, pygame
 
 matrix_width = 10
 matrix_height = 17
-blockratio = 100 #fill in a blocksize
 color_order = [2,0,1] #[r,g,b]
 UDP_PORT = 6453
 UDP_IP= "127.0.0.1"
 bufferSize = 1024
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-f", "--fullscreen", help="fullscreen mode",
+                    action="store_true")
+parser.add_argument("-b", "--blocksize", help="set blocksize")
+args = parser.parse_args()
+
+
 
 print("Active and listening for connections on port %s and ip %s" % (UDP_PORT, UDP_IP))
 # create a datagram socket
@@ -23,9 +30,18 @@ sock.bind( (UDP_IP,UDP_PORT) )
 def draw_board():
 
     pygame.init()
+    if args.blocksize:
+        args.blocksize = int(args.blocksize)
+        
+    else:
+        infoObject = pygame.display.Info()
+        args.blocksize = infoObject.current_w/matrix_height
+    
 
-    # Create the surface of (width, height), and its window.
-    surface = pygame.display.set_mode((blockratio*matrix_height, blockratio*matrix_width))
+    if args.fullscreen:
+        surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.FULLSCREEN)
+    else:
+        surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.RESIZABLE)
 
 
     while True:
@@ -60,7 +76,7 @@ def draw_board():
             for row in range(matrix_width):           # Draw each row of the board.
                 color = (data[data_number+color_order[0]],data[data_number+color_order[1]],data[data_number+color_order[2]])
                 data_number += 3
-                the_square = (blockratio*col, blockratio*row, blockratio*matrix_height, blockratio*matrix_width)
+                the_square = (args.blocksize*col, args.blocksize*row, args.blocksize*matrix_height, args.blocksize*matrix_width)
                 surface.fill(color, the_square)
 
         pygame.display.flip()
