@@ -16,6 +16,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--fullscreen", help="fullscreen mode",
                     action="store_true")
 parser.add_argument("-b", "--blocksize", help="set blocksize")
+parser.add_argument("--debug", help="enable debug", default=False)
 args = parser.parse_args()
 
 
@@ -78,9 +79,9 @@ while True:
             g = data[data_number+color_order[1]]
             b = data[data_number+color_order[2]]
             color = (r,g,b)
-            data_number += 3
-            the_square = (args.blocksize*col, matrix_height - args.blocksize*row, args.blocksize*matrix_height, args.blocksize*matrix_width)
+            the_square = (args.blocksize*col, (matrix_height)-(args.blocksize*row)-17, args.blocksize*matrix_height, args.blocksize*matrix_width)
             surface.fill(color, the_square)
+            data_number += 3
 
     pygame.display.flip()
 
