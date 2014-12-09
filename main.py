@@ -11,6 +11,7 @@ UDP_PORT = 6453
 UDP_IP= "127.0.0.1"
 bufferSize = 1024
 
+data = [0]*531
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--fullscreen", help="fullscreen mode",
                     action="store_true")
