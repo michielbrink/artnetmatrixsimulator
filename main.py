@@ -74,9 +74,12 @@ while True:
 
     for col in range(matrix_height):       # Run through cols drawing squares
         for row in range(matrix_width):           # Draw each row of the board.
-            color = (data[data_number+color_order[0]],data[data_number+color_order[1]],data[data_number+color_order[2]])
+            r = data[data_number+color_order[0]]
+            g = data[data_number+color_order[1]]
+            b = data[data_number+color_order[2]]
+            color = (r,g,b)
             data_number += 3
-            the_square = (args.blocksize*col, args.blocksize*row, args.blocksize*matrix_height, args.blocksize*matrix_width)
+            the_square = (args.blocksize*col, matrix_height - args.blocksize*row, args.blocksize*matrix_height, args.blocksize*matrix_width)
             surface.fill(color, the_square)
 
     pygame.display.flip()
