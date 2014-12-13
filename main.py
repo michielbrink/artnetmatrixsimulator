@@ -8,7 +8,7 @@ matrix_width = 10
 matrix_height = 17
 color_order = [2,0,1] #[r,g,b]
 UDP_PORT = 6453
-UDP_IP= "127.0.0.1"
+UDP_IP= "localhost"
 bufferSize = 1024
 
 data = [0]*531
@@ -80,7 +80,10 @@ while True:
             b = data[data_number+color_order[2]]
             color = (r,g,b)
             the_square = (args.blocksize*col, (matrix_height)-(args.blocksize*row)-17, args.blocksize*matrix_height, args.blocksize*matrix_width)
-            surface.fill(color, the_square)
+            pygame.draw.rect(surface,color,the_square, 0)
+            the_square = (args.blocksize*col, (matrix_height)-(args.blocksize*row)-17, args.blocksize*matrix_height, args.blocksize*matrix_width)
+            pygame.draw.rect(surface,(0,0,0), the_square, 2)
+            #surface.fill(color, the_square)
             data_number += 3
 
     pygame.display.flip()
