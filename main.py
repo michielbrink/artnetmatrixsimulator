@@ -15,7 +15,7 @@ data = [0]*531
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--fullscreen", help="fullscreen mode",
                     action="store_true")
-parser.add_argument("-b", "--blocksize", help="set blocksize")
+parser.add_argument("-b", "--blocksize", default=40,help="set blocksize")
 parser.add_argument("--debug", help="enable debug", default=False)
 args = parser.parse_args()
 
@@ -29,13 +29,7 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 sock.bind( (UDP_IP,UDP_PORT) )
 
 pygame.init()
-if args.blocksize:
-    args.blocksize = int(args.blocksize)
-      
-else:
-    infoObject = pygame.display.Info()
-    args.blocksize = infoObject.current_w/matrix_height
-    
+args.blocksize = int(args.blocksize)
 
 if args.fullscreen:
     surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.FULLSCREEN)
@@ -55,9 +49,9 @@ while True:
         
     #  if no message was available, just wait a while
     except socket.error:
-
+		pass
         # wait a bit to keep from clobbering the CPU
-        time.sleep(0.01)
+        #time.sleep(0.01)
 
     if byte_data:
          
@@ -87,6 +81,7 @@ while True:
             data_number += 3
 
     pygame.display.flip()
+    time.sleep(1./120)
 
 
 pygame.quit()
