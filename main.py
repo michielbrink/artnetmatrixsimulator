@@ -24,7 +24,6 @@ args = parser.parse_args()
 print("Active and listening for connections on port %s and ip %s" % (UDP_PORT, UDP_IP))
 # create a datagram socket
 sock = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-sock.setblocking(False)
 # bind the socket to a port, to allow people to send info to it
 sock.bind( (UDP_IP,UDP_PORT) )
 
@@ -87,7 +86,6 @@ while True:
             data_number += 3
 
     pygame.display.flip()
-    flush()
     time.sleep(0.02)
 
 
