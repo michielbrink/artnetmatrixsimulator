@@ -24,7 +24,7 @@ args = parser.parse_args()
 print("Active and listening for connections on port %s and ip %s" % (UDP_PORT, UDP_IP))
 # create a datagram socket
 sock = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+sock.setblocking(False)
 # bind the socket to a port, to allow people to send info to it
 sock.bind( (UDP_IP,UDP_PORT) )
 
@@ -36,6 +36,12 @@ if args.fullscreen:
 else:
     surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.RESIZABLE)
 
+def flush():
+    while 1:
+        try:
+            bytes = sock.recv(bufferSize)
+        except:
+            break
 
 while True:
 
@@ -44,7 +50,7 @@ while True:
     try:
           
         # try to get a message on the socket
-        byte_data, addr = sock.recvfrom( 531, socket.MSG_DONTWAIT ) # buffer size is 1024 bytes
+        byte_data, addr = sock.recvfrom(bufferSize) # buffer size is 1024 bytes
 
         
     #  if no message was available, just wait a while
@@ -81,7 +87,8 @@ while True:
             data_number += 3
 
     pygame.display.flip()
-    time.sleep(1./120)
+    flush()
+    time.sleep(0.02)
 
 
 pygame.quit()
