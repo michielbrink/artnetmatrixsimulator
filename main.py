@@ -2,7 +2,7 @@
 
 #thanks to http://openbookproject.net/thinkcs/python/english3e/pygame.html
 
-import argparse, socket, time, pygame
+import argparse, socket, time, pygame, sys
 
 matrix_width = 10
 matrix_height = 17
@@ -19,7 +19,7 @@ parser.add_argument("-b", "--blocksize", default=40,help="set blocksize")
 parser.add_argument("--debug", help="enable debug", default=False)
 args = parser.parse_args()
 
-
+debug = args.debug
 
 print("Active and listening for connections on port %s and ip %s" % (UDP_PORT, UDP_IP))
 # create a datagram socket
@@ -62,15 +62,23 @@ while True:
          
         byte_data = byte_data[18:]
         data=[ord(i) for i in byte_data]
-        print data
+        if debug:
+            print data
 
     # Look for an event from keyboard, mouse, etc.
-    ev = pygame.event.poll()
-    if ev.type == pygame.QUIT:
-        break;
-    elif ev.type == pygame.KEYDOWN:
-        if ev.key == pygame.K_ESCAPE:
-            pygame.quit()
+    pygame.event.pump()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                 pygame.quit()
+    # ev = pygame.event.poll()
+    # if ev.type == pygame.QUIT:
+    #     break;
+    # elif ev.type == pygame.KEYDOWN:
+    #     if ev.key == pygame.K_ESCAPE:
+    #         pygame.quit()
 
     for col in range(matrix_height):       # Run through cols drawing squares
         for row in range(matrix_width):           # Draw each row of the board.
@@ -86,7 +94,8 @@ while True:
             data_number += 3
 
     pygame.display.flip()
-    time.sleep(0.02)
+    #60FPS
+    time.sleep(0.016)
 
 
 pygame.quit()
