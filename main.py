@@ -7,7 +7,7 @@ import argparse, socket, time, pygame, sys
 matrix_width = 10
 matrix_height = 17
 color_order = [2,0,1] #[r,g,b]
-UDP_PORT = 6453
+UDP_PORT = 6454
 UDP_IP= "localhost"
 bufferSize = 1024
 
