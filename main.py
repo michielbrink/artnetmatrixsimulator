@@ -6,12 +6,11 @@ import argparse, socket, time, pygame, sys
 
 matrix_width = 10
 matrix_height = 17
-color_order = [0, 1, 2]# [2,0,1] #[r,g,b]
 UDP_PORT = 6454
 UDP_IP= "localhost"
-bufferSize = 1024
+bufferSize = 170*3
 
-data = [0]*531
+data = [0]*bufferSize
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--fullscreen", help="fullscreen mode",
                     action="store_true")
@@ -82,16 +81,17 @@ while True:
 
     for col in range(matrix_height):       # Run through cols drawing squares
         for row in range(matrix_width):           # Draw each row of the board.
-            r = data[data_number+color_order[0]]
-            g = data[data_number+color_order[1]]
-            b = data[data_number+color_order[2]]
-            color = (r,g,b)
+            r = data[data_number + 0]
+            g = data[data_number + 1]
+            b = data[data_number + 2]
+            color = (r, g, b)
             the_square = (args.blocksize*col, (matrix_height)-(args.blocksize*row)-17, args.blocksize*matrix_height, args.blocksize*matrix_width)
             pygame.draw.rect(surface,color,the_square, 0)
             the_square = (args.blocksize*col, (matrix_height)-(args.blocksize*row)-17, args.blocksize*matrix_height, args.blocksize*matrix_width)
             pygame.draw.rect(surface,(0,0,0), the_square, 2)
-            #surface.fill(color, the_square)
             data_number += 3
+            if data_number >= len(data):
+                break
 
     pygame.display.flip()
     #60FPS
