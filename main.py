@@ -6,7 +6,7 @@ import argparse, socket, time, pygame, sys
 
 matrix_width = 10
 matrix_height = 17
-color_order = [2,0,1] #[r,g,b]
+color_order = [0, 1, 2]# [2,0,1] #[r,g,b]
 UDP_PORT = 6454
 UDP_IP= "localhost"
 bufferSize = 1024
@@ -95,7 +95,7 @@ while True:
 
     pygame.display.flip()
     #60FPS
-    time.sleep(0.016)
+    #time.sleep(0.016)
 
 
 pygame.quit()
