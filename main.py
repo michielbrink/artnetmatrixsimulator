@@ -1,68 +1,63 @@
 #!/usr/bin/python
 
-#thanks to http://openbookproject.net/thinkcs/python/english3e/pygame.html
-
-import argparse, socket, time, pygame, sys
+# thanks to http://openbookproject.net/thinkcs/python/english3e/pygame.html
+import argparse
+import socket
+import sys
+import pygame
 
 matrix_width = 10
 matrix_height = 17
 UDP_PORT = 6454
-UDP_IP= "localhost"
-bufferSize = 170*3
+UDP_IP = "localhost"
+bufferSize = 170 * 3
 
-data = [0]*bufferSize
+data = [0] * bufferSize
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--fullscreen", help="fullscreen mode",
                     action="store_true")
-parser.add_argument("-b", "--blocksize", default=40,help="set blocksize")
+parser.add_argument("-b", "--blocksize", default=40, help="set blocksize")
 parser.add_argument("--debug", help="enable debug", default=False)
 args = parser.parse_args()
 
 debug = args.debug
 
-print("Active and listening for connections on port %s and ip %s" % (UDP_PORT, UDP_IP))
+fmt = (UDP_PORT, UDP_IP)
+fmtstr = "Active and listening for connections on port %s and ip %s" % fmt
+print(fmtstr)
 # create a datagram socket
-sock = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # bind the socket to a port, to allow people to send info to it
-sock.bind( (UDP_IP,UDP_PORT) )
+sock.bind((UDP_IP, UDP_PORT))
 
 pygame.init()
 args.blocksize = int(args.blocksize)
 
 if args.fullscreen:
-    surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.FULLSCREEN)
+    surface = pygame.display.set_mode((args.blocksize * matrix_height,
+                                      args.blocksize * matrix_width),
+                                      pygame.FULLSCREEN)
 else:
-    surface = pygame.display.set_mode((args.blocksize*matrix_height, args.blocksize*matrix_width),pygame.RESIZABLE)
-
-def flush():
-    while 1:
-        try:
-            bytes = sock.recv(bufferSize)
-        except:
-            break
+    surface = pygame.display.set_mode((args.blocksize * matrix_height,
+                                      args.blocksize * matrix_width),
+                                      pygame.RESIZABLE)
 
 while True:
-
     byte_data = None
     data_number = 0
     try:
-          
         # try to get a message on the socket
-        byte_data, addr = sock.recvfrom(bufferSize) # buffer size is 1024 bytes
+        # buffer size is 1024 bytes
+        byte_data, addr = sock.recvfrom(bufferSize)
 
-        
     #  if no message was available, just wait a while
     except socket.error:
-		pass
-        # wait a bit to keep from clobbering the CPU
-        #time.sleep(0.01)
-
+        pass
     if byte_data:
-         
         byte_data = byte_data[18:]
-        data=[ord(i) for i in byte_data]
+        data = [ord(i) for i in byte_data]
         if debug:
-            print data
+            print(data)
 
     # Look for an event from keyboard, mouse, etc.
     pygame.event.pump()
@@ -71,31 +66,38 @@ while True:
             sys.exit(0)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                 pygame.quit()
-    # ev = pygame.event.poll()
-    # if ev.type == pygame.QUIT:
-    #     break;
-    # elif ev.type == pygame.KEYDOWN:
-    #     if ev.key == pygame.K_ESCAPE:
-    #         pygame.quit()
+                pygame.quit()
 
-    for col in range(matrix_height):       # Run through cols drawing squares
-        for row in range(matrix_width):           # Draw each row of the board.
+    # for every pixel get the color and place it on the right spot.
+    # and then draw it.
+    for col in range(matrix_height):
+        for row in range(matrix_width):
             r = data[data_number + 0]
             g = data[data_number + 1]
             b = data[data_number + 2]
             color = (r, g, b)
-            the_square = (args.blocksize*col, (matrix_height)-(args.blocksize*row)-17, args.blocksize*matrix_height, args.blocksize*matrix_width)
-            pygame.draw.rect(surface,color,the_square, 0)
-            the_square = (args.blocksize*col, (matrix_height)-(args.blocksize*row)-17, args.blocksize*matrix_height, args.blocksize*matrix_width)
-            pygame.draw.rect(surface,(0,0,0), the_square, 2)
+
+            x = args.blocksize * col
+            y = matrix_height - (args.blocksize * row) - matrix_height
+            width = args.blocksize * matrix_height
+            height = args.blocksize * matrix_width
+            the_square = (x, y, width, height)
+            pygame.draw.rect(surface, color, the_square, 0)
+
+            x = args.blocksize * col
+            y = matrix_height - (args.blocksize * row) - matrix_height
+            width = args.blocksize * matrix_height
+            height = args.blocksize * matrix_width
+            the_square = (x, y, width, height)
+            pygame.draw.rect(surface, (0, 0, 0), the_square, 2)
+
+            # increment in steps of three since the packet is layed out as
+            # values of r, g, b following eache other like that.
             data_number += 3
             if data_number >= len(data):
                 break
 
     pygame.display.flip()
-    #60FPS
-    #time.sleep(0.016)
 
 
 pygame.quit()
