@@ -9,7 +9,7 @@ import pygame
 matrix_width = 10
 matrix_height = 17
 UDP_PORT = 6454
-UDP_IP = "localhost"
+UDP_IP = "0.0.0.0"
 bufferSize = 170 * 3
 
 data = [0] * bufferSize
@@ -47,7 +47,6 @@ while True:
     data_number = 0
     try:
         # try to get a message on the socket
-        # buffer size is 1024 bytes
         byte_data, addr = sock.recvfrom(bufferSize)
 
     #  if no message was available, just wait a while
@@ -63,10 +62,11 @@ while True:
     pygame.event.pump()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            sys.exit(0)
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
+                sys.exit()
 
     # for every pixel get the color and place it on the right spot.
     # and then draw it.
