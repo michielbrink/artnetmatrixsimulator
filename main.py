@@ -68,17 +68,40 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-    #snake mode  (doesn´t work yet)
+    #snake mode  (doesnt work yet)
     if args.snake:
+
         print "1"
         print data
-        for y in range(0, matrix_height, 2):
-            templist = []
-            for x in range(matrix_width - 1, -1, -1):
-                templist.append(data[y * matrix_width + x])
-            for x in range(0, matrix_width):
-                data[y * matrix_width + x] = templist[x]
+
+        tempdata = []
+        #transform data to tempdata
+        for i in xrange(0, len(data), 3):
+            tempdata.append((data[i],data[i+1],data[i+2]))
+
         print "2"
+        print tempdata
+
+        for x in range(0, matrix_width, 2):
+            templist = []
+            for y in range(matrix_height - 1, -1, -1):
+                templist.append(tempdata[x * matrix_height + y])
+            for y in range(0, matrix_height):
+                tempdata[x * matrix_height + y] = templist[y]
+
+        #transform tempdata back to data
+        channels = len(data)/3
+        data = []
+
+        print "3"
+        print tempdata
+
+        for i in xrange(0, channels, 1):
+            data.append(tempdata[i][0])
+            data.append(tempdata[i][1])
+            data.append(tempdata[i][2])
+
+        print "4"
         print data
 
     # for every pixel get the color and place it on the right spot.
