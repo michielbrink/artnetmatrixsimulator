@@ -14,8 +14,8 @@ bufferSize = 170 * 3
 
 data = [0] * bufferSize
 parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--fullscreen", help="fullscreen mode",
-                    action="store_true")
+parser.add_argument("-f", "--fullscreen", help="fullscreen mode", action="store_true")
+parser.add_argument("-s", "--snake", help="snake modes", action="store_true")
 parser.add_argument("-b", "--blocksize", default=40, help="set blocksize")
 parser.add_argument("--debug", help="enable debug", default=False)
 args = parser.parse_args()
@@ -67,6 +67,19 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
+
+    #snake mode  (doesn´t work yet)
+    if args.snake:
+        print "1"
+        print data
+        for y in range(0, matrix_height, 2):
+            templist = []
+            for x in range(matrix_width - 1, -1, -1):
+                templist.append(data[y * matrix_width + x])
+            for x in range(0, matrix_width):
+                data[y * matrix_width + x] = templist[x]
+        print "2"
+        print data
 
     # for every pixel get the color and place it on the right spot.
     # and then draw it.
